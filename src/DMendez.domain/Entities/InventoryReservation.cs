@@ -1,4 +1,4 @@
-﻿using DMendez.Domain.Enums;
+using DMendez.Domain.Enums;
 
 namespace DMendez.Domain.Entities
 {
@@ -12,7 +12,9 @@ namespace DMendez.Domain.Entities
         public DateTimeOffset CreatedAt { get; private set; }
         public DateTimeOffset? ExpiresAt { get; private set; }
 
-        public InvetoryReservationStatus Status { get; private set; }
+        public InventoryReservationStatus Status { get; private set; }
+
+        private InventoryReservation() {} // EF Core
 
         public InventoryReservation(
             Guid orderId,
@@ -55,7 +57,7 @@ namespace DMendez.Domain.Entities
             Quantity = quantity;
             CreatedAt = createdAt;
             ExpiresAt = expiresAt;
-            Status = InventoryReservationStatus.;
+            Status = InventoryReservationStatus.Active;
         }
 
         public bool HasReachedExpiration(DateTimeOffset now)

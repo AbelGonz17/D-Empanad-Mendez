@@ -1,4 +1,4 @@
-﻿namespace DMendez.Domain.Entities
+namespace DMendez.Domain.Entities
 {
     public class Product
     {
@@ -8,15 +8,24 @@
         public decimal Price { get; private set; }
         public Guid CategoryId { get; private set; }
         public bool IsActive { get; private set; }
+        public string ImageUrl { get; private set; }
 
-        public Product(string name, string description, decimal price, Guid categoryId)
+        private Product() {} // EF Core
+
+        public Product(string name, string description, decimal price, Guid categoryId, string imageUrl = null)
         {
             Id = Guid.NewGuid();
             UpdateDetails(name, description);
             ChangePrice(price);
             ChangeCategory(categoryId);
+            ImageUrl = imageUrl;
 
             IsActive = true;
+        }
+
+        public void UpdateImage(string imageUrl)
+        {
+            ImageUrl = imageUrl;
         }
 
         public void UpdateDetails(string name, string description)

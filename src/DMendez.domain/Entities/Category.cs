@@ -1,16 +1,25 @@
-﻿namespace DMendez.Domain.Entities
+namespace DMendez.Domain.Entities
 {
     public class Category
     {
         public Guid Id { get; private set; }
         public string Name { get; private set; }
         public bool IsActive { get; private set; }
+        public string ImageUrl { get; private set; }
 
-        public Category (string name)
+        private Category() {} // EF Core
+
+        public Category (string name, string imageUrl = null)
         {
             Id = Guid.NewGuid();
-            name = ValidateName(Name);
+            Name = ValidateName(name);
+            ImageUrl = imageUrl;
             IsActive = true;
+        }
+
+        public void UpdateImage(string imageUrl)
+        {
+            ImageUrl = imageUrl;
         }
 
         public void Rename(string name)

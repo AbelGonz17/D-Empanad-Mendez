@@ -1,4 +1,4 @@
-﻿namespace DMendez.Domain.Entities
+namespace DMendez.Domain.Entities
 {
     public class ProductInventory
     {
@@ -6,6 +6,8 @@
         public int StockQuantity { get; private set; }
         public int ReserveQuanity { get; private set; }
         public int AvaibleQuantity => StockQuantity - ReserveQuanity;
+
+        private ProductInventory() {} // EF Core
 
         public ProductInventory(Guid productId, int initialQuantity)
         {
