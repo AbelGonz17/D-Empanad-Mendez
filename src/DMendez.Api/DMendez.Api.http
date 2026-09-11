@@ -1,0 +1,6 @@
+@DMendez.Api_HostAddress = http://localhost:5186
+
+GET {{DMendez.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

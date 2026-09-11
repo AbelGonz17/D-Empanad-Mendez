@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/DMendez.Api/DMendez.Api.csproj" />
+    <Project Path="src/DMendez.Application/DMendez.Application.csproj" />
+    <Project Path="src/DMendez.Domain/DMendez.Domain.csproj" />
+    <Project Path="src/DMendez.Infrastructure/DMendez.Infrastructure.csproj" />
+  </Folder>
+</Solution>
