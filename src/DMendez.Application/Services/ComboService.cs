@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using DMendez.Application.Common.Models;
 using DMendez.Application.DTOs.Combos;
 using DMendez.Application.Interfaces;
 using DMendez.Application.Mappings;
@@ -21,26 +22,35 @@ namespace DMendez.Application.Services
             _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         }
 
-        public async Task<IReadOnlyList<ComboDto>> GetAllAsync(CancellationToken cancellationToken = default)
+        public async Task<Result<IReadOnlyList<ComboDto>>> GetAllAsync(CancellationToken cancellationToken = default)
         {
             var combos = await _comboRepository.GetAllAsync(cancellationToken);
-            return combos.ToDtoList();
+            return Result.Success(combos.ToDtoList());
         }
 
-        public async Task<IReadOnlyList<ComboDto>> GetActiveAsync(CancellationToken cancellationToken = default)
+        public async Task<Result<IReadOnlyList<ComboDto>>> GetActiveAsync(CancellationToken cancellationToken = default)
         {
             var combos = await _comboRepository.GetActiveCombosWithItemsAsync(cancellationToken);
-            return combos.ToDtoList();
+            return Result.Success(combos.ToDtoList());
         }
 
-        public async Task<ComboDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        public async Task<Result<ComboDto>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
             var combo = await _comboRepository.GetComboWithItemsAsync(id, cancellationToken);
-            return combo?.ToDto();
+            if (combo == null)
+                return Result.NotFound<ComboDto>($"No se encontró el combo con ID '{id}'.");
+
+            return Result.Success(combo.ToDto());
         }
 
-        public async Task<ComboDto> CreateAsync(CreateComboDto dto, CancellationToken cancellationToken = default)
+        public async Task<Result<ComboDto>> CreateAsync(CreateComboDto dto, CancellationToken cancellationToken = default)
         {
+            if (string.IsNullOrWhiteSpace(dto.Name))
+                return Result.Failure<ComboDto>("El nombre del combo es requerido.");
+
+            if (dto.Price < 0)
+                return Result.Failure<ComboDto>("El precio del combo no puede ser negativo.");
+
             var combo = new Combo(dto.Name, dto.Price);
             if (dto.ImageUrl != null)
             {
@@ -49,6 +59,9 @@ namespace DMendez.Application.Services
 
             foreach (var item in dto.Items)
             {
+                if (item.Quantity <= 0)
+                    return Result.Failure<ComboDto>("La cantidad de cada ítem debe ser mayor que cero.");
+
                 combo.AddItem(item.ProductId, item.Quantity);
             }
 
@@ -59,14 +72,20 @@ namespace DMendez.Application.Services
 
             await _comboRepository.AddAsync(combo, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
-            return combo.ToDto();
+            return Result.Success(combo.ToDto());
         }
 
-        public async Task<ComboDto?> UpdateAsync(Guid id, UpdateComboDto dto, CancellationToken cancellationToken = default)
+        public async Task<Result<ComboDto>> UpdateAsync(Guid id, UpdateComboDto dto, CancellationToken cancellationToken = default)
         {
+            if (string.IsNullOrWhiteSpace(dto.Name))
+                return Result.Failure<ComboDto>("El nombre del combo es requerido.");
+
+            if (dto.Price < 0)
+                return Result.Failure<ComboDto>("El precio del combo no puede ser negativo.");
+
             var combo = await _comboRepository.GetComboWithItemsAsync(id, cancellationToken);
             if (combo == null)
-                return null;
+                return Result.NotFound<ComboDto>($"No se encontró el combo con ID '{id}'.");
 
             combo.Rename(dto.Name);
             combo.ChangePrice(dto.Price);
@@ -77,66 +96,69 @@ namespace DMendez.Application.Services
 
             _comboRepository.Update(combo);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
-            return combo.ToDto();
+            return Result.Success(combo.ToDto());
         }
 
-        public async Task<ComboDto?> AddItemAsync(Guid id, AddComboItemDto dto, CancellationToken cancellationToken = default)
+        public async Task<Result<ComboDto>> AddItemAsync(Guid id, AddComboItemDto dto, CancellationToken cancellationToken = default)
         {
+            if (dto.Quantity <= 0)
+                return Result.Failure<ComboDto>("La cantidad a agregar debe ser mayor que cero.");
+
             var combo = await _comboRepository.GetComboWithItemsAsync(id, cancellationToken);
             if (combo == null)
-                return null;
+                return Result.NotFound<ComboDto>($"No se encontró el combo con ID '{id}'.");
 
             combo.AddItem(dto.ProductId, dto.Quantity);
             _comboRepository.Update(combo);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
-            return combo.ToDto();
+            return Result.Success(combo.ToDto());
         }
 
-        public async Task<ComboDto?> RemoveItemAsync(Guid id, Guid productId, CancellationToken cancellationToken = default)
+        public async Task<Result<ComboDto>> RemoveItemAsync(Guid id, Guid productId, CancellationToken cancellationToken = default)
         {
             var combo = await _comboRepository.GetComboWithItemsAsync(id, cancellationToken);
             if (combo == null)
-                return null;
+                return Result.NotFound<ComboDto>($"No se encontró el combo con ID '{id}'.");
 
             combo.RemoveItem(productId);
             _comboRepository.Update(combo);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
-            return combo.ToDto();
+            return Result.Success(combo.ToDto());
         }
 
-        public async Task<bool> ActivateAsync(Guid id, CancellationToken cancellationToken = default)
+        public async Task<Result> ActivateAsync(Guid id, CancellationToken cancellationToken = default)
         {
             var combo = await _comboRepository.GetComboWithItemsAsync(id, cancellationToken);
             if (combo == null)
-                return false;
+                return Result.NotFound($"No se encontró el combo con ID '{id}'.");
 
             combo.Activate();
             _comboRepository.Update(combo);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
-            return true;
+            return Result.Success();
         }
 
-        public async Task<bool> DeactivateAsync(Guid id, CancellationToken cancellationToken = default)
+        public async Task<Result> DeactivateAsync(Guid id, CancellationToken cancellationToken = default)
         {
             var combo = await _comboRepository.GetComboWithItemsAsync(id, cancellationToken);
             if (combo == null)
-                return false;
+                return Result.NotFound($"No se encontró el combo con ID '{id}'.");
 
             combo.Deactivate();
             _comboRepository.Update(combo);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
-            return true;
+            return Result.Success();
         }
 
-        public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
+        public async Task<Result> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
         {
             var combo = await _comboRepository.GetComboWithItemsAsync(id, cancellationToken);
             if (combo == null)
-                return false;
+                return Result.NotFound($"No se encontró el combo con ID '{id}'.");
 
             _comboRepository.Delete(combo);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
-            return true;
+            return Result.Success();
         }
     }
 }

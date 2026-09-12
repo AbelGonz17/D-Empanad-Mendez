@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using DMendez.Application.Common.Models;
 using DMendez.Application.DTOs.Orders;
 using DMendez.Application.Interfaces;
 using DMendez.Application.Interfaces.External;
@@ -37,32 +38,38 @@ namespace DMendez.Application.Services
             _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         }
 
-        public async Task<IReadOnlyList<OrderDto>> GetAllAsync(CancellationToken cancellationToken = default)
+        public async Task<Result<IReadOnlyList<OrderDto>>> GetAllAsync(CancellationToken cancellationToken = default)
         {
             var orders = await _orderRepository.GetAllAsync(cancellationToken);
-            return orders.ToDtoList();
+            return Result.Success(orders.ToDtoList());
         }
 
-        public async Task<IReadOnlyList<OrderDto>> GetByUserIdAsync(string userId, CancellationToken cancellationToken = default)
+        public async Task<Result<IReadOnlyList<OrderDto>>> GetByUserIdAsync(string userId, CancellationToken cancellationToken = default)
         {
             var orders = await _orderRepository.GetOrdersByUserIdAsync(userId, cancellationToken);
-            return orders.ToDtoList();
+            return Result.Success(orders.ToDtoList());
         }
 
-        public async Task<IReadOnlyList<OrderDto>> GetByStatusAsync(OrderStatus status, CancellationToken cancellationToken = default)
+        public async Task<Result<IReadOnlyList<OrderDto>>> GetByStatusAsync(OrderStatus status, CancellationToken cancellationToken = default)
         {
             var orders = await _orderRepository.GetOrdersByStatusAsync(status, cancellationToken);
-            return orders.ToDtoList();
+            return Result.Success(orders.ToDtoList());
         }
 
-        public async Task<OrderDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        public async Task<Result<OrderDto>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
             var order = await _orderRepository.GetOrderWithItemsAsync(id, cancellationToken);
-            return order?.ToDto();
+            if (order == null)
+                return Result.NotFound<OrderDto>($"No se encontró el pedido con ID '{id}'.");
+
+            return Result.Success(order.ToDto());
         }
 
-        public async Task<OrderDto> CreateAsync(CreateOrderDto dto, CancellationToken cancellationToken = default)
+        public async Task<Result<OrderDto>> CreateAsync(CreateOrderDto dto, CancellationToken cancellationToken = default)
         {
+            if (dto.Items == null || dto.Items.Count == 0)
+                return Result.Failure<OrderDto>("El pedido debe contener al menos un ítem.");
+
             decimal deliveryFee = 0;
             if (dto.Type == OrderType.Delivery && dto.DeliveryZoneId.HasValue)
             {
@@ -89,7 +96,7 @@ namespace DMendez.Application.Services
                     var product = await _productRepository.GetByIdAsync(itemDto.ProductId.Value, cancellationToken);
                     if (product == null)
                     {
-                        throw new InvalidOperationException($"El producto con id {itemDto.ProductId} no existe.");
+                        return Result.NotFound<OrderDto>($"El producto con ID '{itemDto.ProductId}' no existe.");
                     }
                     unitPrice = product.Price;
                 }
@@ -98,13 +105,13 @@ namespace DMendez.Application.Services
                     var combo = await _comboRepository.GetByIdAsync(itemDto.ComboId.Value, cancellationToken);
                     if (combo == null)
                     {
-                        throw new InvalidOperationException($"El combo con id {itemDto.ComboId} no existe.");
+                        return Result.NotFound<OrderDto>($"El combo con ID '{itemDto.ComboId}' no existe.");
                     }
                     unitPrice = combo.Price;
                 }
                 else
                 {
-                    throw new InvalidOperationException("Cada ítem debe tener un producto o un combo asignado.");
+                    return Result.Failure<OrderDto>("Cada ítem debe tener un producto o un combo asignado.");
                 }
 
                 order.AddItem(itemDto.ProductId, itemDto.ComboId, itemDto.Quantity, unitPrice);
@@ -142,14 +149,14 @@ namespace DMendez.Application.Services
                 // La falla en el envío de correo no debe anular la creación de la orden
             }
 
-            return order.ToDto();
+            return Result.Success(order.ToDto());
         }
 
-        public async Task<bool> UpdateStatusAsync(Guid id, UpdateOrderStatusDto dto, CancellationToken cancellationToken = default)
+        public async Task<Result<OrderDto>> UpdateStatusAsync(Guid id, UpdateOrderStatusDto dto, CancellationToken cancellationToken = default)
         {
             var order = await _orderRepository.GetOrderWithItemsAsync(id, cancellationToken);
             if (order == null)
-                return false;
+                return Result.NotFound<OrderDto>($"No se encontró el pedido con ID '{id}'.");
 
             order.UpdateStatus(dto.Status);
             _orderRepository.Update(order);
@@ -179,14 +186,17 @@ namespace DMendez.Application.Services
                 // La falla en el correo no debe anular la actualización de la orden
             }
 
-            return true;
+            return Result.Success(order.ToDto());
         }
 
-        public async Task<bool> CancelAsync(Guid id, CancellationToken cancellationToken = default)
+        public async Task<Result> CancelAsync(Guid id, CancellationToken cancellationToken = default)
         {
             var order = await _orderRepository.GetOrderWithItemsAsync(id, cancellationToken);
             if (order == null)
-                return false;
+                return Result.NotFound($"No se encontró el pedido con ID '{id}'.");
+
+            if (order.Status == OrderStatus.Delivered || order.Status == OrderStatus.Cancelled)
+                return Result.Conflict($"No se puede cancelar un pedido con estado '{order.Status}'.");
 
             order.UpdateStatus(OrderStatus.Cancelled);
             _orderRepository.Update(order);
@@ -213,7 +223,7 @@ namespace DMendez.Application.Services
                 // La falla en el correo no debe anular la cancelación de la orden
             }
 
-            return true;
+            return Result.Success();
         }
     }
 }

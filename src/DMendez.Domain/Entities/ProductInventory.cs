@@ -25,6 +25,22 @@ namespace DMendez.Domain.Entities
             StockQuantity = initialQuantity;
         }
 
+        public void ReplenishStock(int quantity)
+        {
+            ValidatePositiveQuantity(quantity);
+            StockQuantity += quantity;
+        }
+
+        public void ReduceStock(int quantity)
+        {
+            ValidatePositiveQuantity(quantity);
+            if (quantity > AvaibleQuantity)
+            {
+                throw new InvalidOperationException("No hay suficientes unidades disponibles.");
+            }
+            StockQuantity -= quantity;
+        }
+
         public void AddStock(int quantity)
         {
             ValidatePositiveQuantity(quantity);
