@@ -26,7 +26,7 @@ namespace DMendez.Api.Controllers
         /// <summary>
         /// Sube una imagen al servidor y retorna su URL pública accesible.
         /// </summary>
-        /// <param name="file">Archivo de imagen a subir (formatos: JPG, PNG, WEBP, máx 5MB).</param>
+        /// <param name="request">Archivo de imagen a subir (formatos: JPG, PNG, WEBP, máx 5MB).</param>
         /// <param name="folder">Carpeta destino (ej. "products", "categories", "combos"). Por defecto: "general".</param>
         /// <param name="cancellationToken">Token de cancelación.</param>
         /// <response code="200">Archivo subido correctamente, retorna la URL.</response>
@@ -36,10 +36,11 @@ namespace DMendez.Api.Controllers
         [ProducesResponseType(typeof(FileUploadResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<FileUploadResponse>> Upload(
-            [FromForm] IFormFile file, 
+            [FromForm] FileUploadDto request, 
             [FromQuery] string folder = "general", 
             CancellationToken cancellationToken = default)
         {
+            var file = request?.File;
             if (file == null || file.Length == 0)
                 return BadRequest(new { message = "No se ha proporcionado ningún archivo." });
 
@@ -79,6 +80,17 @@ namespace DMendez.Api.Controllers
             await _fileStorageService.DeleteFileAsync(url, cancellationToken);
             return NoContent();
         }
+    }
+
+    /// <summary>
+    /// Datos requeridos para la subida de un archivo.
+    /// </summary>
+    public class FileUploadDto
+    {
+        /// <summary>
+        /// Archivo a cargar.
+        /// </summary>
+        public IFormFile File { get; set; } = null!;
     }
 
     /// <summary>
