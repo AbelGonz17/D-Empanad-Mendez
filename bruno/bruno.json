@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "DMendez API",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

@@ -1,0 +1,15 @@
+meta {
+  name: Get Orders By Status
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/api/orders/status/{{status}}
+  body: none
+  auth: none
+}
+
+params:path {
+  status: Pending
+}

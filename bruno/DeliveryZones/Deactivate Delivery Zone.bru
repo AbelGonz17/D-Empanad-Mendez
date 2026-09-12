@@ -1,0 +1,15 @@
+meta {
+  name: Deactivate Delivery Zone
+  type: http
+  seq: 7
+}
+
+patch {
+  url: {{baseUrl}}/api/delivery-zones/{{zoneId}}/deactivate
+  body: none
+  auth: none
+}
+
+params:path {
+  zoneId: 00000000-0000-0000-0000-000000000000
+}

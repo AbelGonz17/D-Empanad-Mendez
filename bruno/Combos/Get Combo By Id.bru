@@ -1,0 +1,15 @@
+meta {
+  name: Get Combo By Id
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/api/combos/{{comboId}}
+  body: none
+  auth: none
+}
+
+params:path {
+  comboId: 00000000-0000-0000-0000-000000000000
+}

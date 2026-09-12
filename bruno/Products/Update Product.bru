@@ -1,0 +1,25 @@
+meta {
+  name: Update Product
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{baseUrl}}/api/products/{{productId}}
+  body: json
+  auth: none
+}
+
+params:path {
+  productId: 00000000-0000-0000-0000-000000000000
+}
+
+body:json {
+  {
+    "name": "Empanada de Pollo y Queso Doble",
+    "description": "Empanada premium con doble porción de pollo y queso mozzarella derretido",
+    "price": 95.00,
+    "categoryId": "00000000-0000-0000-0000-000000000000",
+    "imageUrl": "/uploads/products/pollo-queso.png"
+  }
+}

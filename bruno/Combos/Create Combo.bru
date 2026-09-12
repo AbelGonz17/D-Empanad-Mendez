@@ -1,0 +1,25 @@
+meta {
+  name: Create Combo
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/api/combos
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Combo Méndez Pareja",
+    "price": 320.00,
+    "imageUrl": "/uploads/combos/pareja.png",
+    "items": [
+      {
+        "productId": "00000000-0000-0000-0000-000000000000",
+        "quantity": 3
+      }
+    ]
+  }
+}

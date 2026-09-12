@@ -1,0 +1,16 @@
+meta {
+  name: Remove Item from Combo
+  type: http
+  seq: 7
+}
+
+delete {
+  url: {{baseUrl}}/api/combos/{{comboId}}/items/{{productId}}
+  body: none
+  auth: none
+}
+
+params:path {
+  comboId: 00000000-0000-0000-0000-000000000000
+  productId: 00000000-0000-0000-0000-000000000000
+}

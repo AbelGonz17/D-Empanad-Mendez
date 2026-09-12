@@ -1,0 +1,464 @@
+{
+  "info": {
+    "_postman_id": "8f3b2d1e-9a7c-4e5f-b123-456789abcdef",
+    "name": "DMendez API",
+    "description": "Colección completa para pruebas de API de D'Empanadas Méndez (Categorías, Productos, Combos, Pedidos, Zonas de Entrega y Archivos).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "categoryId",
+      "value": "00000000-0000-0000-0000-000000000000",
+      "type": "string"
+    },
+    {
+      "key": "productId",
+      "value": "00000000-0000-0000-0000-000000000000",
+      "type": "string"
+    },
+    {
+      "key": "comboId",
+      "value": "00000000-0000-0000-0000-000000000000",
+      "type": "string"
+    },
+    {
+      "key": "orderId",
+      "value": "00000000-0000-0000-0000-000000000000",
+      "type": "string"
+    },
+    {
+      "key": "zoneId",
+      "value": "00000000-0000-0000-0000-000000000000",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "Get All Categories",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/categories"
+          }
+        },
+        {
+          "name": "Get Active Categories",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/categories/active"
+          }
+        },
+        {
+          "name": "Get Category By Id",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/categories/{{categoryId}}"
+          }
+        },
+        {
+          "name": "Create Category",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Empanadas Tradicionales\",\n  \"imageUrl\": \"/uploads/categories/tradicionales.png\"\n}"
+            },
+            "url": "{{baseUrl}}/api/categories"
+          }
+        },
+        {
+          "name": "Update Category",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Empanadas Gourmet\",\n  \"imageUrl\": \"/uploads/categories/gourmet.png\"\n}"
+            },
+            "url": "{{baseUrl}}/api/categories/{{categoryId}}"
+          }
+        },
+        {
+          "name": "Activate Category",
+          "request": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/categories/{{categoryId}}/activate"
+          }
+        },
+        {
+          "name": "Deactivate Category",
+          "request": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/categories/{{categoryId}}/deactivate"
+          }
+        },
+        {
+          "name": "Delete Category",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/categories/{{categoryId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "Get All Products",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/products"
+          }
+        },
+        {
+          "name": "Get Active Products",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/products/active"
+          }
+        },
+        {
+          "name": "Get Product By Id",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/products/{{productId}}"
+          }
+        },
+        {
+          "name": "Create Product",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Empanada de Pollo y Queso\",\n  \"description\": \"Deliciosa empanada rellena de pechuga de pollo desmenuzada y queso fundido\",\n  \"price\": 85.00,\n  \"categoryId\": \"{{categoryId}}\",\n  \"imageUrl\": \"/uploads/products/pollo-queso.png\",\n  \"initialStock\": 50\n}"
+            },
+            "url": "{{baseUrl}}/api/products"
+          }
+        },
+        {
+          "name": "Update Product",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Empanada de Pollo y Queso Doble\",\n  \"description\": \"Empanada extra rellena de pollo y doble queso fundido\",\n  \"price\": 95.00,\n  \"categoryId\": \"{{categoryId}}\",\n  \"imageUrl\": \"/uploads/products/pollo-queso.png\"\n}"
+            },
+            "url": "{{baseUrl}}/api/products/{{productId}}"
+          }
+        },
+        {
+          "name": "Update Stock",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 20\n}"
+            },
+            "url": "{{baseUrl}}/api/products/{{productId}}/stock"
+          }
+        },
+        {
+          "name": "Activate Product",
+          "request": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/products/{{productId}}/activate"
+          }
+        },
+        {
+          "name": "Deactivate Product",
+          "request": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/products/{{productId}}/deactivate"
+          }
+        },
+        {
+          "name": "Delete Product",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/products/{{productId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Combos",
+      "item": [
+        {
+          "name": "Get All Combos",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/combos"
+          }
+        },
+        {
+          "name": "Get Active Combos",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/combos/active"
+          }
+        },
+        {
+          "name": "Get Combo By Id",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/combos/{{comboId}}"
+          }
+        },
+        {
+          "name": "Create Combo",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Combo Méndez Pareja\",\n  \"price\": 320.00,\n  \"imageUrl\": \"/uploads/combos/pareja.png\",\n  \"items\": [\n    {\n      \"productId\": \"{{productId}}\",\n      \"quantity\": 3\n    }\n  ]\n}"
+            },
+            "url": "{{baseUrl}}/api/combos"
+          }
+        },
+        {
+          "name": "Update Combo",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Combo Méndez Pareja Especial\",\n  \"price\": 340.00,\n  \"imageUrl\": \"/uploads/combos/pareja-especial.png\"\n}"
+            },
+            "url": "{{baseUrl}}/api/combos/{{comboId}}"
+          }
+        },
+        {
+          "name": "Add Item to Combo",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productId\": \"{{productId}}\",\n  \"quantity\": 2\n}"
+            },
+            "url": "{{baseUrl}}/api/combos/{{comboId}}/items"
+          }
+        },
+        {
+          "name": "Remove Item from Combo",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/combos/{{comboId}}/items/{{productId}}"
+          }
+        },
+        {
+          "name": "Activate Combo",
+          "request": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/combos/{{comboId}}/activate"
+          }
+        },
+        {
+          "name": "Deactivate Combo",
+          "request": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/combos/{{comboId}}/deactivate"
+          }
+        },
+        {
+          "name": "Delete Combo",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/combos/{{comboId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Orders",
+      "item": [
+        {
+          "name": "Get All Orders",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/orders"
+          }
+        },
+        {
+          "name": "Get Orders By User",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/orders/user/cliente@example.com"
+          }
+        },
+        {
+          "name": "Get Orders By Status",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/orders/status/Pending"
+          }
+        },
+        {
+          "name": "Get Order By Id",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/orders/{{orderId}}"
+          }
+        },
+        {
+          "name": "Create Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"cliente@example.com\",\n  \"type\": 0,\n  \"paymentMethod\": 0,\n  \"deliveryAddress\": \"Calle Las Flores #12, Santo Domingo\",\n  \"deliveryZoneId\": null,\n  \"items\": [\n    {\n      \"productId\": \"{{productId}}\",\n      \"comboId\": null,\n      \"quantity\": 2\n    }\n  ]\n}"
+            },
+            "url": "{{baseUrl}}/api/orders"
+          }
+        },
+        {
+          "name": "Update Order Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": 1\n}"
+            },
+            "url": "{{baseUrl}}/api/orders/{{orderId}}/status"
+          }
+        },
+        {
+          "name": "Cancel Order",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/orders/{{orderId}}/cancel"
+          }
+        }
+      ]
+    },
+    {
+      "name": "DeliveryZones",
+      "item": [
+        {
+          "name": "Get All Delivery Zones",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/delivery-zones"
+          }
+        },
+        {
+          "name": "Get Active Delivery Zones",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/delivery-zones/active"
+          }
+        },
+        {
+          "name": "Get Delivery Zone By Id",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/delivery-zones/{{zoneId}}"
+          }
+        },
+        {
+          "name": "Create Delivery Zone",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Zona Metropolitana Central\",\n  \"deliveryFee\": 150.00\n}"
+            },
+            "url": "{{baseUrl}}/api/delivery-zones"
+          }
+        },
+        {
+          "name": "Update Delivery Zone",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Zona Metropolitana Ampliada\",\n  \"deliveryFee\": 175.00\n}"
+            },
+            "url": "{{baseUrl}}/api/delivery-zones/{{zoneId}}"
+          }
+        },
+        {
+          "name": "Activate Delivery Zone",
+          "request": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/delivery-zones/{{zoneId}}/activate"
+          }
+        },
+        {
+          "name": "Deactivate Delivery Zone",
+          "request": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/delivery-zones/{{zoneId}}/deactivate"
+          }
+        },
+        {
+          "name": "Delete Delivery Zone",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/delivery-zones/{{zoneId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Files",
+      "item": [
+        {
+          "name": "Upload Image",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/files/upload?folder=products"
+          }
+        },
+        {
+          "name": "Delete File",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/files?url=/uploads/products/sample.png"
+          }
+        }
+      ]
+    }
+  ]
+}

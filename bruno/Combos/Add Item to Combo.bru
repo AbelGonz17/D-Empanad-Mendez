@@ -1,0 +1,22 @@
+meta {
+  name: Add Item to Combo
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/api/combos/{{comboId}}/items
+  body: json
+  auth: none
+}
+
+params:path {
+  comboId: 00000000-0000-0000-0000-000000000000
+}
+
+body:json {
+  {
+    "productId": "00000000-0000-0000-0000-000000000000",
+    "quantity": 2
+  }
+}

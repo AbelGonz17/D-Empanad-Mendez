@@ -1,0 +1,23 @@
+meta {
+  name: Update Combo
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{baseUrl}}/api/combos/{{comboId}}
+  body: json
+  auth: none
+}
+
+params:path {
+  comboId: 00000000-0000-0000-0000-000000000000
+}
+
+body:json {
+  {
+    "name": "Combo Méndez Pareja Especial",
+    "price": 340.00,
+    "imageUrl": "/uploads/combos/pareja-especial.png"
+  }
+}

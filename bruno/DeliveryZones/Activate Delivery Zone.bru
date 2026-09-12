@@ -1,0 +1,15 @@
+meta {
+  name: Activate Delivery Zone
+  type: http
+  seq: 6
+}
+
+patch {
+  url: {{baseUrl}}/api/delivery-zones/{{zoneId}}/activate
+  body: none
+  auth: none
+}
+
+params:path {
+  zoneId: 00000000-0000-0000-0000-000000000000
+}

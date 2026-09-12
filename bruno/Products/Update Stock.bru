@@ -1,0 +1,21 @@
+meta {
+  name: Update Stock
+  type: http
+  seq: 6
+}
+
+patch {
+  url: {{baseUrl}}/api/products/{{productId}}/stock
+  body: json
+  auth: none
+}
+
+params:path {
+  productId: 00000000-0000-0000-0000-000000000000
+}
+
+body:json {
+  {
+    "quantity": 25
+  }
+}

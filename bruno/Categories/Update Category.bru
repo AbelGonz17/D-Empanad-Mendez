@@ -1,0 +1,22 @@
+meta {
+  name: Update Category
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{baseUrl}}/api/categories/{{categoryId}}
+  body: json
+  auth: none
+}
+
+params:path {
+  categoryId: 00000000-0000-0000-0000-000000000000
+}
+
+body:json {
+  {
+    "name": "Empanadas Clásicas y Especiales",
+    "imageUrl": "/uploads/categories/clasicas.png"
+  }
+}

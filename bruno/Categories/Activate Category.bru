@@ -1,0 +1,15 @@
+meta {
+  name: Activate Category
+  type: http
+  seq: 6
+}
+
+patch {
+  url: {{baseUrl}}/api/categories/{{categoryId}}/activate
+  body: none
+  auth: none
+}
+
+params:path {
+  categoryId: 00000000-0000-0000-0000-000000000000
+}

@@ -1,0 +1,22 @@
+meta {
+  name: Update Delivery Zone
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{baseUrl}}/api/delivery-zones/{{zoneId}}
+  body: json
+  auth: none
+}
+
+params:path {
+  zoneId: 00000000-0000-0000-0000-000000000000
+}
+
+body:json {
+  {
+    "name": "Zona Metropolitana Ampliada",
+    "deliveryFee": 175.00
+  }
+}

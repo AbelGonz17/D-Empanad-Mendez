@@ -1,0 +1,28 @@
+meta {
+  name: Create Order
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/api/orders
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "userId": "cliente@example.com",
+    "type": 0,
+    "paymentMethod": 0,
+    "deliveryAddress": "Calle Las Flores #12, Ensanche La Fe",
+    "deliveryZoneId": null,
+    "items": [
+      {
+        "productId": "00000000-0000-0000-0000-000000000000",
+        "comboId": null,
+        "quantity": 2
+      }
+    ]
+  }
+}

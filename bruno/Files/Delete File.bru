@@ -1,0 +1,15 @@
+meta {
+  name: Delete File
+  type: http
+  seq: 2
+}
+
+delete {
+  url: {{baseUrl}}/api/files?url=/uploads/products/sample.png
+  body: none
+  auth: none
+}
+
+params:query {
+  url: /uploads/products/sample.png
+}

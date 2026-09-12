@@ -1,0 +1,15 @@
+meta {
+  name: Get Orders By User
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/orders/user/{{userId}}
+  body: none
+  auth: none
+}
+
+params:path {
+  userId: cliente@example.com
+}

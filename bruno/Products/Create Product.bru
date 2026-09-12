@@ -1,0 +1,22 @@
+meta {
+  name: Create Product
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/api/products
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Empanada de Pollo y Queso",
+    "description": "Deliciosa masa crocante rellena de pechuga de pollo sazonada y queso fundido",
+    "price": 85.00,
+    "categoryId": "00000000-0000-0000-0000-000000000000",
+    "imageUrl": "/uploads/products/pollo-queso.png",
+    "initialStock": 50
+  }
+}

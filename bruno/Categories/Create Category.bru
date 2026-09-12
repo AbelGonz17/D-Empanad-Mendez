@@ -1,0 +1,18 @@
+meta {
+  name: Create Category
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/api/categories
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Empanadas Tradicionales",
+    "imageUrl": "/uploads/categories/tradicionales.png"
+  }
+}

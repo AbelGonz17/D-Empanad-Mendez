@@ -1,0 +1,18 @@
+meta {
+  name: Create Delivery Zone
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/api/delivery-zones
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Zona Metropolitana Central",
+    "deliveryFee": 150.00
+  }
+}

@@ -1,0 +1,15 @@
+meta {
+  name: Delete Delivery Zone
+  type: http
+  seq: 8
+}
+
+delete {
+  url: {{baseUrl}}/api/delivery-zones/{{zoneId}}
+  body: none
+  auth: none
+}
+
+params:path {
+  zoneId: 00000000-0000-0000-0000-000000000000
+}

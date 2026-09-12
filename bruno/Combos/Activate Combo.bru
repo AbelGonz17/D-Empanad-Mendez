@@ -1,0 +1,15 @@
+meta {
+  name: Activate Combo
+  type: http
+  seq: 8
+}
+
+patch {
+  url: {{baseUrl}}/api/combos/{{comboId}}/activate
+  body: none
+  auth: none
+}
+
+params:path {
+  comboId: 00000000-0000-0000-0000-000000000000
+}
