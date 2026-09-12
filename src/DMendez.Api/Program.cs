@@ -1,3 +1,4 @@
+using DMendez.Infrastructure;
 using DMendez.Infrastructure.Contex;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
@@ -19,11 +20,7 @@ builder.Services.AddSwaggerGen(options =>
 });
 builder.Services.AddOpenApi();
 
-builder.Services.AddDbContext<DMendezDbContext>(options =>
-{
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), 
-        sqlOptions => sqlOptions.EnableRetryOnFailure());
-});
+builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 

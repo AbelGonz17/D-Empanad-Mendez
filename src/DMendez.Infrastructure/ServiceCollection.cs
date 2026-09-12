@@ -1,4 +1,6 @@
-﻿using DMendez.Infrastructure.Contex;
+using DMendez.Domain.Interfaces;
+using DMendez.Infrastructure.Contex;
+using DMendez.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,8 +13,21 @@ namespace DMendez.Infrastructure
         {
             services.AddDbContext<DMendezDbContext>(optionsAction =>
             {
-                optionsAction.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+                optionsAction.UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
+                    sqlOptions => sqlOptions.EnableRetryOnFailure());
             });
+
+            // Repositories
+            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddScoped<IComboRepository, ComboRepository>();
+            services.AddScoped<IDeliveryZoneRepository, DeliveryZoneRepository>();
+            services.AddScoped<IProductInventoryRepository, ProductInventoryRepository>();
+
+            // Unit of Work
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             return services;
         }
