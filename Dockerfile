@@ -12,7 +12,7 @@ WORKDIR /src
 COPY ["src/DMendez.Api/DMendez.Api.csproj", "src/DMendez.Api/"]
 COPY ["src/DMendez.Application/DMendez.Application.csproj", "src/DMendez.Application/"]
 COPY ["src/DMendez.Infrastructure/DMendez.Infrastructure.csproj", "src/DMendez.Infrastructure/"]
-COPY ["src/DMendez.domain/DMendez.Domain.csproj", "src/DMendez.domain/"]
+COPY ["src/DMendez.Domain/DMendez.Domain.csproj", "src/DMendez.Domain/"]
 RUN dotnet restore "./src/DMendez.Api/DMendez.Api.csproj"
 COPY . .
 WORKDIR "/src/src/DMendez.Api"
