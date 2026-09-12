@@ -31,7 +31,26 @@ namespace DMendez.Infrastructure
 
             // External Services
             services.AddScoped<DMendez.Application.Interfaces.External.IFileStorageService, DMendez.Infrastructure.Services.LocalFileStorageService>();
-            services.AddScoped<DMendez.Application.Interfaces.External.IEmailService, DMendez.Infrastructure.Services.EmailService>();
+
+            // External Services: Email
+            services.AddHttpClient("Resend");
+
+            var emailSection = configuration.GetSection("EmailSettings");
+            var useMock = emailSection.GetValue<bool>("UseMock", true);
+            var provider = emailSection.GetValue<string>("Provider") ?? "Resend";
+
+            if (useMock)
+            {
+                services.AddScoped<DMendez.Application.Interfaces.External.IEmailService, DMendez.Infrastructure.Services.Email.MockEmailService>();
+            }
+            else if (provider.Equals("Smtp", StringComparison.OrdinalIgnoreCase))
+            {
+                services.AddScoped<DMendez.Application.Interfaces.External.IEmailService, DMendez.Infrastructure.Services.Email.SmtpEmailService>();
+            }
+            else
+            {
+                services.AddScoped<DMendez.Application.Interfaces.External.IEmailService, DMendez.Infrastructure.Services.Email.ResendEmailService>();
+            }
 
             return services;
         }

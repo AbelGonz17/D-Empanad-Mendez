@@ -113,13 +113,34 @@ namespace DMendez.Application.Services
             await _orderRepository.AddAsync(order, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            // Notificación externa (correo)
-            _ = _emailService.SendEmailAsync(
-                dto.UserId, 
-                $"Confirmación de Pedido #{order.Id}", 
-                $"Tu pedido ha sido creado con éxito. Total: ${order.TotalAmount}", 
-                false, 
-                cancellationToken);
+            // Notificación externa (correo) con plantilla HTML
+            try
+            {
+                var htmlBody = $@"
+                    <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px;'>
+                        <h2 style='color: #d32f2f;'>¡Gracias por tu pedido en D'Empanadas Méndez!</h2>
+                        <p>Hola,</p>
+                        <p>Hemos recibido tu pedido correctamente. A continuación los detalles:</p>
+                        <div style='background-color: #f9f9f9; padding: 15px; border-radius: 6px; margin: 15px 0;'>
+                            <p style='margin: 5px 0;'><strong>Número de Pedido:</strong> #{order.Id}</p>
+                            <p style='margin: 5px 0;'><strong>Dirección de Entrega:</strong> {order.DeliveryAddress}</p>
+                            <p style='margin: 5px 0;'><strong>Costo de Envío:</strong> ${order.DeliveryFee:F2}</p>
+                            <p style='margin: 5px 0; font-size: 1.1em; color: #d32f2f;'><strong>Total a Pagar:</strong> ${order.TotalAmount:F2}</p>
+                        </div>
+                        <p>Te notificaremos cuando tu pedido esté en camino.</p>
+                    </div>";
+
+                await _emailService.SendEmailAsync(
+                    dto.UserId, 
+                    $"Confirmación de Pedido #{order.Id}", 
+                    htmlBody, 
+                    isHtml: true, 
+                    cancellationToken: cancellationToken);
+            }
+            catch
+            {
+                // La falla en el envío de correo no debe anular la creación de la orden
+            }
 
             return order.ToDto();
         }
@@ -134,12 +155,29 @@ namespace DMendez.Application.Services
             _orderRepository.Update(order);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            _ = _emailService.SendEmailAsync(
-                order.UserId, 
-                $"Actualización de Pedido #{order.Id}", 
-                $"El estado de tu pedido ahora es: {dto.Status}", 
-                false, 
-                cancellationToken);
+            try
+            {
+                var htmlBody = $@"
+                    <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px;'>
+                        <h2 style='color: #d32f2f;'>Actualización de Pedido</h2>
+                        <p>El estado de tu pedido <strong>#{order.Id}</strong> ha cambiado a:</p>
+                        <div style='text-align: center; margin: 20px 0;'>
+                            <span style='background-color: #d32f2f; color: white; padding: 10px 18px; border-radius: 20px; font-weight: bold; font-size: 1.1em;'>{dto.Status}</span>
+                        </div>
+                        <p>¡Gracias por preferir D'Empanadas Méndez!</p>
+                    </div>";
+
+                await _emailService.SendEmailAsync(
+                    order.UserId, 
+                    $"Actualización de Pedido #{order.Id}", 
+                    htmlBody, 
+                    isHtml: true, 
+                    cancellationToken: cancellationToken);
+            }
+            catch
+            {
+                // La falla en el correo no debe anular la actualización de la orden
+            }
 
             return true;
         }
@@ -153,6 +191,28 @@ namespace DMendez.Application.Services
             order.UpdateStatus(OrderStatus.Cancelled);
             _orderRepository.Update(order);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            try
+            {
+                var htmlBody = $@"
+                    <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px;'>
+                        <h2 style='color: #d32f2f;'>Cancelación de Pedido</h2>
+                        <p>Tu pedido <strong>#{order.Id}</strong> ha sido cancelado.</p>
+                        <p>Si tienes alguna consulta, por favor contáctanos directamente.</p>
+                    </div>";
+
+                await _emailService.SendEmailAsync(
+                    order.UserId, 
+                    $"Cancelación de Pedido #{order.Id}", 
+                    htmlBody, 
+                    isHtml: true, 
+                    cancellationToken: cancellationToken);
+            }
+            catch
+            {
+                // La falla en el correo no debe anular la cancelación de la orden
+            }
+
             return true;
         }
     }
