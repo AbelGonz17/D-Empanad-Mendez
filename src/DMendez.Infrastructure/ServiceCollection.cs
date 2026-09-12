@@ -29,6 +29,10 @@ namespace DMendez.Infrastructure
             // Unit of Work
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+            // External Services
+            services.AddScoped<DMendez.Application.Interfaces.External.IFileStorageService, DMendez.Infrastructure.Services.LocalFileStorageService>();
+            services.AddScoped<DMendez.Application.Interfaces.External.IEmailService, DMendez.Infrastructure.Services.EmailService>();
+
             return services;
         }
     }
